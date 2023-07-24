@@ -27,30 +27,29 @@ cities = [
 ]
 
 
-def transform_city_data(data: list) -> pd.DataFrame:
-    weather_list = data['list']
+def transform_city_data(data: tuple) -> pd.DataFrame:
 
     weather_data = []
 
-    for item in weather_list:
-        dt = pd.to_datetime(item['dt_txt'])
-        temp = item['main']['temp']
-        feels_like = item['main']['feels_like']
-        temp_min = item['main']['temp_min']
-        temp_max = item['main']['temp_max']
-        pressure = item['main']['pressure']
-        humidity = item['main']['humidity']
-        weather_description = item['weather'][0]['description']
-        wind_speed = item['wind']['speed']
-        wind_deg = item['wind']['deg']
-        pop = item['pop']
+    
+    dt = data['dt']
+    human_timestamp = pd.to_datetime(data['dt'], unit='s')
+    temp = data['main']['temp']
+    feels_like = data['main']['feels_like']
+    temp_min = data['main']['temp_min']
+    temp_max = data['main']['temp_max']
+    pressure = data['main']['pressure']
+    humidity = data['main']['humidity']
+    weather_description = data['weather'][0]['description']
+    wind_speed = data['wind']['speed']
+    wind_deg = data['wind']['deg']
 
-        weather_data.append({
-            'DateTime': dt, 'Temperature': temp, 'Feels_Like': feels_like, 'Temp_Min': temp_min,
-            'Temp_Max': temp_max, 'Pressure': pressure, 'Humidity': humidity,
-            'Weather_Description': weather_description, 'Wind_Speed': wind_speed, 'Wind_Deg': wind_deg,
-            'Probability_of_Precipitation': pop
-        })
+
+    weather_data.append({
+        'DateTime': dt, 'Readable_Date': human_timestamp, 'Temperature': temp, 'Feels_Like': feels_like, 'Temp_Min': temp_min,
+        'Temp_Max': temp_max, 'Pressure': pressure, 'Humidity': humidity,
+        'Weather_Description': weather_description, 'Wind_Speed': wind_speed, 'Wind_Deg': wind_deg,
+    })
 
     weather_df = pd.DataFrame(weather_data)
     return weather_df

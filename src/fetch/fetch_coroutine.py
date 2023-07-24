@@ -13,12 +13,12 @@ from data import cities
 load_dotenv()
 
 # API endpoint URL
-API_BASE_URL = "https://api.openweathermap.org/data/2.5/forecast"
+API_BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 
 
 async def fetch_weather_data(session: aiohttp.ClientSession, lat: int, lon: int) -> list:
     api_key = os.getenv("OPENWEATHERMAP_API_KEY")
-    url = f"{API_BASE_URL}?lat={lat}&lon={lon}&appid={api_key}"
+    url = f"{API_BASE_URL}?lat={lat}&lon={lon}&appid={api_key}&units=metric"
     try:
         async with session.get(url) as response:
             response.raise_for_status()  # Raise exception for non-2xx responses
@@ -40,6 +40,7 @@ async def process_data():
             return
         for i, city in enumerate(cities.cities):
             print(f"Weather data for {city['city']}:")
+            # print(weather_data[i])
             print(cities.transform_city_data(weather_data[i]))
             print("------")
             pass
