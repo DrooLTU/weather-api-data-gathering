@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 # Load environment variables from .env file
 load_dotenv()
@@ -14,6 +15,11 @@ DB_NAME = os.getenv("DB_NAME")
 
 # MySQL database connection URL
 DB_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+engine = create_engine(
+    DB_URL
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 class Base(DeclarativeBase):
     pass
