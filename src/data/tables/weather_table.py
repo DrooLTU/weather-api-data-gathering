@@ -1,17 +1,26 @@
+import os
+import sys
+# Add the parent directory (project root) to the Python path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(project_root)
+
 from sqlalchemy import create_engine, inspect
-from models import WeatherData
+from sqlalchemy.orm import sessionmaker
+from models.weather_data_model import WeatherData
 from db import DB_URL
 
 
 # Create the SQLAlchemy engine
 engine = create_engine(DB_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def create_table(engine, force):
+    insp = inspect(engine)
+    if not insp.has_table("weather_data") or force:
+        WeatherData.metadata.create_all(bind=engine)
+        print("Weather data table created successfully.")
+    else:
+        print("Weather data table already exists.")
 
 if __name__ == "__main__":
-    # Check if the table already exists
-    insp = inspect(engine)
-    if not insp.has_table("weather_data"):
-        # Create the table in the database
-        WeatherData.metadata.create_all(bind=engine)
-        print("WeatherData table created successfully.")
-    else:
-        print("WeatherData table already exists.")
+    create_table(engine)

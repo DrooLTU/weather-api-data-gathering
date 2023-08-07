@@ -1,14 +1,20 @@
-from sqlalchemy import Column, Integer, String, Float
-from sqlalchemy.ext.declarative import declarative_base
+import os
+import sys
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(project_root)
 
-Base = declarative_base()
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from db import Base
 
-# Define the SQLAlchemy City model
+from schemas.weather_data_schema import WeatherDataSchema
+
 class City(Base):
     __tablename__ = "cities"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    city = Column(String(100), nullable=False)
-    country = Column(String(100), nullable=False)
-    lat = Column(Float, nullable=False)
-    lon = Column(Float, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    city: Mapped[str] = mapped_column(nullable=False)
+    country: Mapped[str] = mapped_column(nullable=False)
+    lat: Mapped[float] = mapped_column(nullable=False)
+    lon: Mapped[float] = mapped_column(nullable=False)
+
+    weather_data: Mapped[list["WeatherDataSchema"]] = relationship(back_populates='cities')

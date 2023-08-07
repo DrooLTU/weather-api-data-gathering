@@ -7,4 +7,4 @@ class WeatherDataSchema(BaseModel):
     wind_speed: float
 
     class Config:
-        orm_mode = True
+        from_attributes = True

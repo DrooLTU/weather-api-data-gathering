@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from sqlalchemy.orm import DeclarativeBase
 
 # Load environment variables from .env file
 load_dotenv()
@@ -13,3 +14,6 @@ DB_NAME = os.getenv("DB_NAME")
 
 # MySQL database connection URL
 DB_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+class Base(DeclarativeBase):
+    pass

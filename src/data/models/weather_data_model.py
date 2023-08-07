@@ -1,13 +1,21 @@
-from sqlalchemy import Column, Integer, String, Float
-from sqlalchemy.ext.declarative import declarative_base
+import os
+import sys
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(project_root)
 
-Base = declarative_base()
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from db import Base
+
+from schemas.city_schema import CitySchema
 
 class WeatherData(Base):
     __tablename__ = 'weather_data'
 
-    id = Column(Integer, primary_key=True, index=True)
-    country = Column(String)
-    temperature = Column(Float)
-    humidity = Column(Integer)
-    wind_speed = Column(Float)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
+    city_id: Mapped[int] = mapped_column(ForeignKey('cities.id'))
+    city: Mapped["CitySchema"] = relationship(back_populates='weather_data')
+    temperature: Mapped[float] = mapped_column()
+    humidity: Mapped[int] = mapped_column()
+    wind_speed: Mapped[float] = mapped_column()
+
