@@ -1,14 +1,5 @@
 from pydantic import BaseModel
 
-class CitySchema(BaseModel):
-    city: str
-    country: str
-    lat: float
-    lon: float
-
-    class Config:
-        from_attributes = True
-
 class CityCreateSchema(BaseModel):
     title: str
     country: str
@@ -24,3 +15,10 @@ class CityCreateSchema(BaseModel):
                 "lon": -74.0060
             }
         }
+
+class CitySchema(CityCreateSchema):
+    id: int
+
+    class Config:
+        from_attributes = True
+
