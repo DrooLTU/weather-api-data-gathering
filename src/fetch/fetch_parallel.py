@@ -2,6 +2,7 @@ import httpx
 import os
 import sys
 import concurrent.futures
+import argparse
 from dotenv import load_dotenv
 
 # Add the parent directory (project root) to the Python path
@@ -57,5 +58,23 @@ def do_process_pool():
         process_data(executor)
 
 
+def main():
+    """
+    Select which parallelism to use with the -t and -p options.
+    Default is thread pool.
+    """
+    parser = argparse.ArgumentParser(description="Script with -t and -p options")
+
+    parser.add_argument("-t", "--thread", action="store_true", help="Run the thread pool")
+    parser.add_argument("-p", "--process", action="store_true", help="Run the process pool")
+
+    args = parser.parse_args()
+
+    if args.process:
+        do_thread_pool()
+    else:
+        do_thread_pool()
+
+
 if __name__ == "__main__":
-    do_thread_pool()
+    main()
