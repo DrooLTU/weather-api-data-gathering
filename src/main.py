@@ -1,5 +1,6 @@
 import sys
 import os
+from typing import Any
 
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
@@ -70,7 +71,10 @@ def create_city_route(
     return new_city
 
 
-
+@app.get('/fetch_coroutine')
+async def fetch_coroutine_route()->Any:
+    
+    return await fetch_coroutine.main()
 
 
 # if __name__ == "__main__":
