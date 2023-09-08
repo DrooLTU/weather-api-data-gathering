@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from crontab import CronTab
 import inquirer
 load_dotenv()
+
 cron = CronTab(user=os.getenv("CRON_USER"))
 
 def print_cron_jobs(cron: CronTab) -> None:
@@ -21,11 +22,6 @@ script_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(script_root)
 
 
-# PATHS TO THE VIRTUAL ENVIRONMENT AND THE SCRIPT TO BE RUN
-virtual_env_path = os.path.abspath((os.path.dirname(script_root) + '/venv/bin/python'))
-cron_script_path = os.path.abspath(script_root + '/fetch/fetch_coroutine.py')
-
-# ASK WHICH PARALLELISM TO USE
 question = [
         inquirer.List(
             "method",
@@ -33,10 +29,11 @@ question = [
             choices=["coroutine", "threads", "processes"],
         ),
     ]
-
 answer = inquirer.prompt(question)
 answer = answer["method"]
 
+
+virtual_env_path = os.path.abspath((os.path.dirname(script_root) + '/venv/bin/python'))
 cron_script_path = os.path.abspath(script_root + '/fetch/fetch_coroutine.py')
 if answer == "threads":
     cron_script_path = os.path.abspath(script_root + '/fetch/fetch_parallel.py')
@@ -46,10 +43,7 @@ elif answer == "processes":
 print(f'Chosen: {answer}')
 
 
-# Specify the command of the cron job you want to check
 job_command_to_check = f'{virtual_env_path} {cron_script_path}'
-
-# Iterate through the existing cron jobs and check if the command matches
 job_exists = any(job.command == job_command_to_check for job in cron)
 
 
