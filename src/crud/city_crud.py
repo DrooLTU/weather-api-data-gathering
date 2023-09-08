@@ -4,23 +4,24 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 from sqlalchemy.orm import Session
-from schemas.city_schema import CitySchema, CityCreateSchema
+from data.schemas.city_schema import City as CitySchema, CityCreate as CitySchemaCreate
+from data.models.city_model import City as CityModel
 
-def get_city(db: Session, city: int|str) -> CitySchema:
+def get_city(session: Session, city: int|str) -> CitySchema:
     match city:
         case int():
-            return db.query(CitySchema).filter(CitySchema.id == city).first()
+            return session.query(CityModel).filter(CityModel.id == city).first()
         case str():
-            return db.query(CitySchema).filter(CitySchema.city == city).first()
+            return session.query(CityModel).filter(CityModel.city == city).first()
 
 
-def get_cities(db: Session, skip: int = 0, limit: int = 100) -> list[CitySchema]:
-    return db.query(CitySchema).offset(skip).limit(limit).all()
+def get_cities(session: Session, skip: int = 0, limit: int = 100) -> list[CitySchema]:
+    return session.query(CityModel).offset(skip).limit(limit).all()
 
 
-def create_city(db: Session, city: CityCreateSchema) -> CitySchema:
-    db_city = CityCreateSchema(**city.model_dump())
-    db.add(db_city)
-    db.commit()
-    db.refresh(db_city)
-    return db_city
+def create_city(session: Session, city: CitySchemaCreate) -> CityModel:
+    session_city = CityModel(**city.model_dump())
+    session.add(session_city)
+    session.commit()
+    session.refresh(session_city)
+    return session_city
