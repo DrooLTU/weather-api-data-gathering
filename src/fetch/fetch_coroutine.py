@@ -7,46 +7,53 @@ from dotenv import load_dotenv
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
-from data import cities
+import pandas as pd
+from data.db import engine
+from data.cities import transform_city_data
 
-# Load environment variables from .env file
 load_dotenv()
 
-# API endpoint URL
 API_BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 
+def put_data(df: pd.DataFrame):
+    table_name = 'weather_data'
+    df.to_sql(table_name, engine, if_exists='append', index=False)
+    engine.dispose()
 
-async def fetch_weather_data(session: aiohttp.ClientSession, lat: int, lon: int) -> list:
+def get_cities()-> pd.DataFrame:
+    query = 'SELECT * FROM cities'
+    return pd.read_sql(query, engine)
+
+async def fetch_weather_data(session: aiohttp.ClientSession, city: pd.Series) -> list:
     api_key = os.getenv("OPENWEATHERMAP_API_KEY")
-    url = f"{API_BASE_URL}?lat={lat}&lon={lon}&appid={api_key}&units=metric"
+    url = f"{API_BASE_URL}?lat={city['lat']}&lon={city['lon']}&appid={api_key}&units=metric"
     try:
         async with session.get(url) as response:
             response.raise_for_status()  # Raise exception for non-2xx responses
-            return await response.json()
+            response = await response.json()
+            transformed_data = transform_city_data(response, city)
+            put_data(transformed_data)
+            return transformed_data
     except asyncio.TimeoutError:
-        print(f"Timeout error occurred while fetching weather data for lat={lat}, lon={lon}.")
-        return None  # Return None to handle this error case
+        print(f"Timeout error occurred while fetching weather data for city {city['name']}.")
+        return None
     except aiohttp.ClientError as e:
-        print(f"An error occurred while fetching weather data for lat={lat}, lon={lon}: {e}")
-        return None  # Return None to handle this error case
+        print(f"An error occurred while fetching weather data for city {city['name']}: {e}")
+        return None
 
-async def process_data():
+async def process_data(cities: pd.DataFrame):
     async with aiohttp.ClientSession() as session:
-        tasks = [fetch_weather_data(session, city["lat"], city["lon"]) for city in cities.cities]
+        tasks = [fetch_weather_data(session, city) for index, city in cities.iterrows()]
         try:
-            weather_data = await asyncio.gather(*tasks)
+            await asyncio.gather(*tasks)
         except asyncio.CancelledError as e:
             print("One or more errors occurred while fetching weather data.")
             return
-        for i, city in enumerate(cities.cities):
-            print(f"Weather data for {city['city']}:")
-            # print(weather_data[i])
-            print(cities.transform_city_data(weather_data[i]))
-            print("------")
-            pass
+
 
 async def main():
-    await process_data()
+    cities = get_cities()
+    await process_data(cities)
 
 
 if sys.version_info[0] == 3 and sys.version_info[1] >= 8 and sys.platform.startswith('win'):

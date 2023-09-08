@@ -27,7 +27,7 @@ cities = [
 ]
 
 
-def transform_city_data(data: tuple) -> pd.DataFrame:
+def transform_city_data(data: tuple, city: pd.Series) -> pd.DataFrame:
 
     weather_data = []
 
@@ -46,6 +46,7 @@ def transform_city_data(data: tuple) -> pd.DataFrame:
 
 
     weather_data.append({
+        'City_id': city['id'],
         'DateTime': dt, 'Readable_Date': human_timestamp, 'Temperature': temp, 'Feels_Like': feels_like, 'Temp_Min': temp_min,
         'Temp_Max': temp_max, 'Pressure': pressure, 'Humidity': humidity,
         'Weather_Description': weather_description, 'Wind_Speed': wind_speed, 'Wind_Deg': wind_deg,
