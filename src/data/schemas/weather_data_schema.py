@@ -6,6 +6,7 @@ class WeatherDataBase(BaseModel):
     humidity: int
     wind_speed: float
 
+
 class WeatherDataCreate(WeatherDataBase):
     pass
 

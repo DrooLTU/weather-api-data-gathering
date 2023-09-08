@@ -2,8 +2,9 @@ import sys
 import os
 from typing import Any
 
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, project_root)
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+project_src = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, project_src)
 
 
 from fetch import fetch_coroutine
