@@ -11,7 +11,7 @@ def get_weather_data(db: Session, weatherData: int) -> WeatherDataSchema:
     return db.query(WeatherDataModel).filter(WeatherDataModel.id == weatherData).first()
 
 
-def get_weather_datas(db: Session, skip: int = 0, limit: int = 100) -> list[WeatherDataSchema]:
+def get_weather_data_index(db: Session, skip: int = 0, limit: int = 100) -> list[WeatherDataSchema]:
     return db.query(WeatherDataModel).offset(skip).limit(limit).all()
 
 
