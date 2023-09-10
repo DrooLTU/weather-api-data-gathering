@@ -36,6 +36,32 @@ def job_exists(cron: CronTab, job_name:str)->bool:
     return any(job.command == job_name for job in cron)
 
 
+def question_remove_job(cron: CronTab, job_command: str):
+    question = [
+        inquirer.Confirm("remove", message="Do you want to remove it?"),
+    ]
+    answer = inquirer.prompt(question)
+    answer = answer["remove"]
+    if answer:
+        remove_all_cron_jobs(cron, job_command)
+        print("Cron job was removed.")
+    else:
+        print("Cron job was not removed.")
+
+
+def question_add_job(cron: CronTab, job_command: str):
+    question = [
+        inquirer.Confirm("add", message="Do you want to add this job to the cron?"),
+    ]
+    answer = inquirer.prompt(question)
+    answer = answer["add"]
+    if answer:
+        add_cron_job(cron, job_command, '0 * * * *')
+        print("Database backup cron job was added.")
+    else:
+        print("Database backup cron job was not added.")
+
+
 print("Current cron jobs:")
 print_cron_jobs(cron)
 
@@ -66,51 +92,23 @@ elif answer == "processes":
 print(f'Chosen: {answer}')
 
 
-job_command_to_check = f'{virtual_env_path} {cron_script_path}'
+fetch_data_job_command = f'{virtual_env_path} {cron_script_path}'
 
-
-if job_exists(cron, job_command_to_check):
-    print("The cron job already exists.")
-    q_clear_old_jobs = input("Do you want to remove the cron jobs? (y/n): ")
-    if(q_clear_old_jobs == 'y'):
-        remove_all_cron_jobs(cron, job_command_to_check)
-        print("Run the script again to add the cron job.")
-    else:
-        print("No changes made to the cron jobs. This script does not allow creating duplicate cron jobs.")
+if job_exists(cron, fetch_data_job_command):
+    print("\n\nThis fetch data cron job already exists.")
+    question_remove_job(cron, fetch_data_job_command)
 else:
-    print("The cron job does not exist.")
-    print("The cron job will run every hour.")
-    q_add_new_job = input("Do you want to add the cron job? (y/n): ")
-    if(q_add_new_job == 'y'):
-        add_cron_job(cron, job_command_to_check, '0 * * * *')
-        print("Run the script again to remove the cron job.")
-    else:
-        print("No changes made to the cron jobs.")
+    print("\n\nThis fetch data cron job does not exist.")
+    print("It will run every hour.")
+    question_add_job(cron, fetch_data_job_command)
 
 
 db_backup_job_command = f'{virtual_env_path} {os.path.abspath(script_root + "/cron/db_backup.py")}'
+
 if job_exists(cron, db_backup_job_command):
-    print(f'Database backup cron job was detected. Do you want to remove it?')
-    question = [
-        inquirer.Confirm("remove", message="Database backup cron job was detected. Do you want to remove it?"),
-    ]
-    answer = inquirer.prompt(question)
-    answer = answer["remove"]
-    if answer:
-        remove_all_cron_jobs(cron, db_backup_job_command)
-        print("Database backup cron job was removed.")
-    else:
-        print("Database backup cron job was not removed.")
+    print(f'\n\nDatabase backup cron job was detected.')
+    question_remove_job(cron, db_backup_job_command)
 else:
-    print("Database backup cron job was not detected.")
+    print("\n\nDatabase backup cron job was not detected.")
     print(f'The cron job will run every hour and will keep last {os.getenv("DB_MAX_BACKUPS")} backups.')
-    question = [
-        inquirer.Confirm("add", message="Do you want to add this job to the cron?"),
-    ]
-    answer = inquirer.prompt(question)
-    answer = answer["add"]
-    if answer:
-        add_cron_job(cron, db_backup_job_command)
-        print("Database backup cron job was added.")
-    else:
-        print("Database backup cron job was not added.")
+    question_add_job(cron, db_backup_job_command)
