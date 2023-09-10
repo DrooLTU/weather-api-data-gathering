@@ -57,9 +57,9 @@ def question_add_job(cron: CronTab, job_command: str):
     answer = answer["add"]
     if answer:
         add_cron_job(cron, job_command, '0 * * * *')
-        print("Database backup cron job was added.")
+        print("Cron job was added.")
     else:
-        print("Database backup cron job was not added.")
+        print("Cron job was not added.")
 
 
 print("Current cron jobs:")
