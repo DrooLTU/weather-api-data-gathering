@@ -11,15 +11,17 @@ load_dotenv()
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 BACKUP_DIR = os.getenv("DB_BACKUP_DIR")
-MAX_BACKUPS = os.getenv("DB_MAX_BACKUPS")
+MAX_BACKUPS = int(os.getenv("DB_MAX_BACKUPS"))
 
 TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
 backup_file = os.path.join(BACKUP_DIR, f"{DB_NAME}_backup_{TIMESTAMP}.sql")
 
 
-backup_command = f"mysqldump --user={DB_USER} --password={DB_PASSWORD} {DB_NAME} > {backup_file}"
+backup_command = f"mysqldump -h {DB_HOST} -P{DB_PORT} --user={DB_USER} --password={DB_PASSWORD} {DB_NAME} > {backup_file}"
 os.system(backup_command)
 
 
