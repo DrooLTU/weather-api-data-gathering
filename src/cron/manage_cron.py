@@ -49,14 +49,14 @@ def question_remove_job(cron: CronTab, job_command: str):
         print("Cron job was not removed.")
 
 
-def question_add_job(cron: CronTab, job_command: str):
+def question_add_job(cron: CronTab, job_command: str, schedule: str = '0 * * * *'):
     question = [
         inquirer.Confirm("add", message="Do you want to add this job to the cron?"),
     ]
     answer = inquirer.prompt(question)
     answer = answer["add"]
     if answer:
-        add_cron_job(cron, job_command, '0 * * * *')
+        add_cron_job(cron, job_command, schedule)
         print("Cron job was added.")
     else:
         print("Cron job was not added.")
@@ -99,7 +99,7 @@ if job_exists(cron, fetch_data_job_command):
     question_remove_job(cron, fetch_data_job_command)
 else:
     print("\n\nThis fetch data cron job does not exist.")
-    print("It will run every hour.")
+    print("It will run every hour @ 0mins.")
     question_add_job(cron, fetch_data_job_command)
 
 
@@ -110,5 +110,5 @@ if job_exists(cron, db_backup_job_command):
     question_remove_job(cron, db_backup_job_command)
 else:
     print("\n\nDatabase backup cron job was not detected.")
-    print(f'The cron job will run every hour and will keep last {os.getenv("DB_MAX_BACKUPS")} backups.')
-    question_add_job(cron, db_backup_job_command)
+    print(f'The cron job will run every hour @ 5mins and will keep last {os.getenv("DB_MAX_BACKUPS")} backups.')
+    question_add_job(cron, db_backup_job_command, schedule='5 * * * *')
