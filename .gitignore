@@ -3,3 +3,4 @@
 /venv/
 transformer_lite.egg-info
 .env
+.vscode/
