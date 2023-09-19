@@ -53,3 +53,10 @@ or on Windows
 3. Try out the endpoints
 4. Build your own app using the API
 
+
+## Benchmark
+![benchmark](Benchmark.png)
+
+
+## EER diagram
+![EER diagram](EER_diagram_weather_api.png)

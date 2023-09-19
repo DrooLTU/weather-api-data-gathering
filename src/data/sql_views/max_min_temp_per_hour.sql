@@ -1,6 +1,5 @@
 CREATE VIEW max_min_temp_per_hour AS
 SELECT
-    DATE(FROM_UNIXTIME(w.datetime)) AS date,
     HOUR(FROM_UNIXTIME(w.datetime)) AS hour,
     MAX(w.temperature) AS max_temperature,
     MIN(w.temperature) AS min_temperature,
@@ -9,4 +8,4 @@ SELECT
 FROM
     weather_api.weather_data w
 GROUP BY
-    date, hour;
+    hour;
