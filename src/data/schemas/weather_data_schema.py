@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 from pydantic import BaseModel
+from .city_schema import City
 
 class WeatherDataBase(BaseModel):
     city_id: int
@@ -23,5 +24,6 @@ class WeatherDataCreate(WeatherDataBase):
 
 class WeatherData(WeatherDataBase):
     id: int
+    city: City
     class Config:
         from_attributes = True

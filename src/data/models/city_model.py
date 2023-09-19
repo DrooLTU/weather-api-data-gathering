@@ -7,7 +7,6 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
 from db import Base
-from models.weather_data_model import WeatherData
 
 class City(Base):
     __tablename__ = "cities"
@@ -19,5 +18,5 @@ class City(Base):
     lon = Column(Float, nullable=False)
 
     # Define the relationship with WeatherData
-    weather_data = relationship(WeatherData, back_populates="city")
+    weather_data = relationship("WeatherData", back_populates="city")
 
