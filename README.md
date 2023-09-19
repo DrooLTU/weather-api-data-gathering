@@ -8,7 +8,7 @@
 - SQLAlchemy
 - and more...
 
-## How to run
+## How to run the API server
 
 1. Clone the repository
 
@@ -30,8 +30,20 @@ or on Windows
 7. Run the script to create the database
 ```python3 src/data/tables/create_all_tables.py```
 
-8. Run the dev server
+8. Run the SQL queries from the src/data/sql_views folder to create the views. Don't forget to change the database name in the queries.
+
+9. Run the dev server
 ```uvicorn src.main:app --reload```
+
+
+## How to set up CRON jobs for data gathering and backup
+
+1. Run the CRON wizzard script
+```python3 src/cron/manage_cron.py```
+
+2. Follow the instructions
+
+3. You can run the wizzard again if you want to remove the jobs
 
 
 ## How to use
@@ -40,24 +52,4 @@ or on Windows
 2. Go to the docs (default: http://localhost:8000/docs)
 3. Try out the endpoints
 4. Build your own app using the API
-
-## Endpoints
-
-### /weather
-
-#### GET
-
-- Returns all the weather data
-
-#### POST
-
-- Adds a new weather data
-
-### /weather/{id}
-
-#### GET
-
-- Returns the weather data with the given id
-
-
 
