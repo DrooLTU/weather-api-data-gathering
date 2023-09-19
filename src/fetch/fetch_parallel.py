@@ -5,7 +5,6 @@ import concurrent.futures
 import argparse
 from dotenv import load_dotenv
 
-# Add the parent directory (project root) to the Python path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
@@ -13,10 +12,8 @@ import pandas as pd
 from data.db import engine
 from data.cities import transform_city_data
 
-# Load environment variables from .env file
 load_dotenv()
 
-# API endpoint URL
 API_BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 
 def put_data(df: pd.DataFrame):
@@ -35,7 +32,7 @@ def fetch_weather_data(city: pd.Series):
     try:
         with httpx.Client() as client:
             response = client.get(url)
-            response.raise_for_status()  # Raise exception for non-2xx responses
+            response.raise_for_status()
             response = response.json()
             transformed_data = transform_city_data(response, city)
             put_data(transformed_data)

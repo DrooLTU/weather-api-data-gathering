@@ -15,13 +15,13 @@ class TimesRainedYesterday(Base):
 class TimesRainedLastWeek(Base):
     __tablename__ = "times_rained_last_week"
     times_rained = Column(Integer, primary_key=True)
+    
 
 class BaseMinMax():
     max_temperature = Column(Float, primary_key=True)
     min_temperature = Column(Float, primary_key=True)
     max_temp_city_name = Column(String(255), primary_key=True)
     min_temp_city_name = Column(String(255), primary_key=True)
-
 
 class TempPerHour(BaseMinMax, Base):
     __tablename__ = "max_min_temp_per_hour"

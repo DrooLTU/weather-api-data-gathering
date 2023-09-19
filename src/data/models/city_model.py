@@ -17,6 +17,4 @@ class City(Base):
     lat = Column(Float, nullable=False)
     lon = Column(Float, nullable=False)
 
-    # Define the relationship with WeatherData
     weather_data = relationship("WeatherData", back_populates="city")
-

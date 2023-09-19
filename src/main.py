@@ -29,7 +29,6 @@ def get_db_session():
         db_session.close()
 
 
-#CITY ROUTES
 @app.get("/cities/", response_model=list[City])
 def read_cities(skip: int = 0, limit: int = 100, db: Session = Depends(get_db_session)) -> list[City]:
     """
@@ -194,47 +193,80 @@ def create_weather_data_route(
 
 @app.get("/views/times-rained-yesterday/")
 def get_times_rained_yesterday_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
-    db = SessionLocal()
+    """
+    Get the data from the times_rained_yesterday view
+    """
     view_data = db.query(Views.TimesRainedYesterday).offset(offset).limit(limit).all()
-    db.close()
     return view_data
+
 
 @app.get("/views/times-rained-last-week/")
 def get_times_rained_last_week_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the times_rained_last_week view
+    """
     view_data = db.query(Views.TimesRainedLastWeek).offset(offset).limit(limit).all()
     return view_data
 
+
 @app.get("/views/temp-per-hour/")
 def get_temp_per_hour_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the max_min_temp_per_hour view
+    """
     view_data = db.query(Views.TempPerHour).offset(offset).limit(limit).all()
     return view_data
 
+
 @app.get("/views/temp-per-day/")
 def get_temp_per_day_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the max_min_temp_per_day view
+    """
     view_data = db.query(Views.TempPerDay).offset(offset).limit(limit).all()
     return view_data
 
+
 @app.get("/views/temp-per-week/")
 def get_temp_per_week_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the max_min_temp_per_week view
+    """
     view_data = db.query(Views.TempPerWeek).offset(offset).limit(limit).all()
     return view_data
 
+
 @app.get("/views/temp-today/")
 def get_temp_today_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the max_min_stddev_temp_today view
+    """
     view_data = db.query(Views.TempToday).offset(offset).limit(limit).all()
     return view_data
 
+
 @app.get("/views/temp-yesterday/")
 def get_temp_yesterday_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the max_min_stddev_temp_yesterday view
+    """
     view_data = db.query(Views.TempYesterday).offset(offset).limit(limit).all()
     return view_data
 
+
 @app.get("/views/temp-current-week/")
 def get_temp_current_week_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the max_min_stddev_temp_current_week view
+    """
     view_data = db.query(Views.TempCurrentWeek).offset(offset).limit(limit).all()
     return view_data
 
+
 @app.get("/views/temp-last-seven-days/")
 def get_temp_last_seven_days_data(offset: int = 0, limit: int = 10, db: Session = Depends(get_db_session)):
+    """
+    Get the data from the max_min_stddev_temp_last_seven_days view
+    """
     view_data = db.query(Views.TempLastSevenDays).offset(offset).limit(limit).all()
     return view_data

@@ -3,7 +3,7 @@ import asyncio
 import os
 import sys
 from dotenv import load_dotenv
-# Add the parent directory (project root) to the Python path
+
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
 
@@ -29,7 +29,7 @@ async def fetch_weather_data(session: aiohttp.ClientSession, city: pd.Series) ->
     url = f"{API_BASE_URL}?lat={city['lat']}&lon={city['lon']}&appid={api_key}&units=metric"
     try:
         async with session.get(url) as response:
-            response.raise_for_status()  # Raise exception for non-2xx responses
+            response.raise_for_status()
             response = await response.json()
             transformed_data = transform_city_data(response, city)
             put_data(transformed_data)
